@@ -32,25 +32,45 @@ let items = [];
 
 function initDungeon() {
     dungeon = [];
-    // Simple cellular automata or random room logic
+    // 1. Fill with walls
     for (let y = 0; y < ROWS; y++) {
-        dungeon[y] = [];
-        for (let x = 0; x < COLS; x++) {
-            // Borders are walls
-            if (x === 0 || x === COLS - 1 || y === 0 || y === ROWS - 1) {
-                dungeon[y][x] = 1; // Wall
-            } else {
-                dungeon[y][x] = Math.random() < 0.2 ? 1 : 0; // 20% walls
+        dungeon[y] = Array(COLS).fill(1);
+    }
+
+    // 2. Simple Random Walk / Drunkard's Walk for guaranteed path
+    let curX = 1;
+    let curY = 1;
+    dungeon[curY][curX] = 0;
+    
+    const targetX = COLS - 2;
+    const targetY = ROWS - 2;
+    
+    // Walk until we reach near the exit
+    while (curX !== targetX || curY !== targetY) {
+        if (Math.random() < 0.5) {
+            if (curX < targetX) curX++;
+            else if (curX > targetX) curX--;
+        } else {
+            if (curY < targetY) curY++;
+            else if (curY > targetY) curY--;
+        }
+        dungeon[curY][curX] = 0;
+    }
+
+    // 3. Add extra random empty spaces to make it a "room"
+    for (let y = 1; y < ROWS - 1; y++) {
+        for (let x = 1; x < COLS - 1; x++) {
+            if (Math.random() < 0.6) { // 60% chance to be floor
+                dungeon[y][x] = 0;
             }
         }
     }
 
-    // Ensure player start and exit are clear
+    // Ensure start and end are ALWAYS floor
     player.x = 1; player.y = 1;
     dungeon[1][1] = 0;
-    dungeon[ROWS-2][COLS-2] = 2; // Exit
+    dungeon[ROWS - 2][COLS - 2] = 2; // Exit
 
-    // Spawn enemies and gold
     spawnEntities();
 }
 
