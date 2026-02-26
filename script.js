@@ -202,11 +202,9 @@ const mobileBtns = {
 Object.entries(mobileBtns).forEach(([id, [dx, dy]]) => {
     const btn = document.getElementById(id);
     if (btn) {
-        btn.addEventListener('touchstart', (e) => {
+        // Gunakan pointerdown agar jalan di HP maupun Mouse tanpa konflik
+        btn.addEventListener('pointerdown', (e) => {
             e.preventDefault();
-            movePlayer(dx, dy);
-        });
-        btn.addEventListener('mousedown', (e) => {
             movePlayer(dx, dy);
         });
     }
