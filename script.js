@@ -180,6 +180,13 @@ function attackEnemy(idx) {
 
 function moveEnemies() {
     enemies.forEach(en => {
+        // Cek apakah musuh berada di sebelah pemain sebelum bergerak
+        const dist = Math.abs(en.x - player.x) + Math.abs(en.y - player.y);
+        if (dist === 1) {
+            attackPlayer();
+            return; // Musuh menyerang, tidak bergerak
+        }
+
         if (Math.random() < 0.3) { // 30% chance to move
             let dx = 0, dy = 0;
             if (Math.random() < 0.5) dx = Math.random() < 0.5 ? 1 : -1;
@@ -190,6 +197,23 @@ function moveEnemies() {
             }
         }
     });
+}
+
+function attackPlayer() {
+    const damage = 5 + Math.floor(Math.random() * 5);
+    player.hp -= damage;
+    logMessage(`Enemy hits you for ${damage} damage!`);
+    updateUI();
+
+    if (player.hp <= 0) {
+        player.hp = 0;
+        updateUI();
+        alert("Game Over! You died in the dungeon.");
+        floor = 1;
+        player.hp = 100;
+        player.gold = 0;
+        initDungeon();
+    }
 }
 
 function updateUI() {
