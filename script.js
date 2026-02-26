@@ -191,6 +191,27 @@ window.addEventListener('keydown', e => {
     }
 });
 
+// Mobile Controls Logic
+const mobileBtns = {
+    'btn-up': [0, -1],
+    'btn-down': [0, 1],
+    'btn-left': [-1, 0],
+    'btn-right': [1, 0]
+};
+
+Object.entries(mobileBtns).forEach(([id, [dx, dy]]) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            movePlayer(dx, dy);
+        });
+        btn.addEventListener('mousedown', (e) => {
+            movePlayer(dx, dy);
+        });
+    }
+});
+
 initDungeon();
 updateUI();
 draw();
